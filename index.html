@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neumorphism Cat Game</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+    .container {
+        background-color: #f0f0f0;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 10px 10px 20px #d9d9d9, 
+                    -10px -10px 20px #ffffff;
+    }
+    #energy-bar {
+        background-color: #e0e0e0;
+        border-radius: 10px;
+        height: 20px;
+        margin-bottom: 10px;
+    }
+    #energy {
+        background-color: #4caf50;
+        border-radius: 10px;
+        height: 100%;
+    }
+    #cat-img {
+        max-width: 10%;
+        border-radius: 20px;
+        cursor: pointer;
+        position: relative;
+    }
+    #message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        border-radius: 10px;
+        display: none;
+    }
+    #pillows {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 20px;
+    }
+    .pillow {
+        width: 50px;
+        height: 50px;
+        background-image: url('pillow.png');
+        background-size: cover;
+        background-position: center;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div id="energy-bar">
+        <div id="energy" style="width: 1%;"></div>
+    </div>
+    <img src="cat.png" id="cat-img" onclick="interactWithCat()" alt="Cat">
+    <div id="message">You are tired! Use a pillow to restore your energy!</div>
+    <div id="pillows"></div>
+</div>
+
+<script>
+    var energy = 10; // Starting energy set to 10%
+    var pillowsCount = 0;
+    var maxPillows = 10;
+    var messageTimeout;
+
+    function interactWithCat() {
+        if (energy <= 0) {
+            showMessage();
+        } else {
+            getPillow();
+            updateEnergy(-1); // Decrease energy when interacting with cat
+        }
+    }
+
+    function getPillow() {
+        if (pillowsCount < maxPillows) {
+            var pillowsDiv = document.getElementById('pillows');
+            var pillow = document.createElement('div');
+            pillow.className = 'pillow';
+            pillow.onclick = function() { usePillow(pillow); };
+            pillowsDiv.appendChild(pillow);
+            pillowsCount++;
+        }
+    }
+
+    function usePillow(pillowDiv) {
+        pillowsCount--;
+        pillowDiv.remove();
+        updateEnergy(1); // Increase energy when using a pillow
+    }
+
+    function updateEnergy(change) {
+        energy += change;
+        energy = Math.max(0, Math.min(100, energy)); // Clamp energy between 0 and 100
+        var energyBar = document.getElementById('energy');
+        energyBar.style.width = energy + '%';
+    }
+
+    function showMessage() {
+        var message = document.getElementById('message');
+        message.style.display = 'block';
+        clearTimeout(messageTimeout);
+        messageTimeout = setTimeout(function() {
+            message.style.display = 'none';
+        }, 2000); // Hide message after 2 seconds
+    }
+</script>
+</body>
+</html>
